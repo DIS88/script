@@ -14,7 +14,7 @@ import re
 def usage():
     print "A simple crwaler "
     print "Usage: python crawler.py -site [...] -max_size [...] -o [outfiel path]"
-    print "e.g: python crawler.py -site 'http://www.hao123.com -max_size 12 -to test.txt''"
+    print "e.g: python crawler.py -site http://www.hao123.com -max_size 12 -to test.txt"
     sys.exit(1)
 
 class Crawler(SGMLParser):
