@@ -1,0 +1,81 @@
+# -*- coding:utf-8 -*-
+'''
+Created on 2013-2-26
+
+@author: zou
+__VIEWSTATE:/wEPDwULLTEyMzI3ODI2ODBkGAEFHl9fQ29udHJvbHNSZXF1aXJlUG9zdEJhY2tLZXlfXxYBBQxVc2VyQ2hlY2tCb3idAlu3Cl/2nVplBEn+M8L+yS/LhA==
+__EVENTVALIDATION:/wEWBQK1qZCFDQLB2tiHDgK1qbSWCwL07qXZBgLmwdLFDRg6SrqffSfnKp45nM0/udgFcoB6
+txtUser:turbogears
+txtPassWord:hehe
+butLogin:登录
+UserCheckBox:on
+'''
+import urllib2, os.path, urllib
+from urllib2 import urlopen, Request
+COOKIFILE = 'cookies.libwww-perl' #www protocal libary for perl
+
+url = 'http://i.5211game.com/rating/ladder?u=333436659'
+username = 'turbogears'
+password = 'hehe'
+
+try:
+    import cookielib
+except ImportError:
+    cookielib = None
+    try:
+        import ClientCookie
+    except ImportError:
+        cj = None
+    else:
+        urlopen = ClientCookie.urlopen
+        cj = ClientCookie.LWPCookieJar()    
+        Request = ClientCookie.Request
+else:
+    cj = cookielib.LWPCookieJar()
+
+if cj is not None:
+    if os.path.isfile(COOKIFILE):
+        cj.load(COOKIFILE)
+#        print 'load cj:', cj
+    if cookielib:
+        opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
+        urllib2.install_opener(opener)
+#        print 'opener, urllib', opener, urlopen
+    else:
+        opener = ClientCookie.build_opener(ClientCookie.HTTPCookieProcessor(cj))
+        ClientCookie.install_opener(opener)
+        
+return_url = 'http://i.5211game.com/rating/ladder?u=333436659'
+request_url = 'http://passport.5211game.com/t/Login.aspx'
+params = {}
+params['__VIEWSTATE'] = '/wEPDwULLTEyMzI3ODI2ODBkGAEFHl9fQ29udHJvbHNSZXF1aXJlUG9zdEJhY2tLZXlfXxYBBQxVc2VyQ2hlY2tCb3jNO97ZWT7XEyU8abO+on4hH07qUA=='
+params['__EVENTVALIDATION'] = '/wEWBQLtvqD4CgLB2tiHDgK1qbSWCwL07qXZBgLmwdLFDdgFI4zYYfwMPkC1oJCVxVRTHkMm'
+params['txtUser'] = username
+params['txtPassWord'] = password
+params['butLogin'] = '登陆'
+params['UserCheckBox'] = 'on'
+data = urllib.urlencode(params)
+headers = {'User-agent':'Mozilla/4.0 (compatible; MSIE 5.5; Windowns NT)'}
+#headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.97 Safari/537.22'}
+
+try:
+    req = Request(request_url, headers)  
+    reponse = urlopen(req, data)
+except IOError, e:
+    print 'Fail to open "%s"' % request_url, e
+    if hasattr(e, 'code'):
+        print 'Error code: %s.' % e.code 
+else:
+    print reponse.info() , reponse.read()
+
+if cj is None:
+    print "没有 cookie jar, 今天不能显示cookies"
+else:
+    print '获得的cookies：'
+    for index, cookies in enumerate(cj):
+        print index, ':', cookies
+    cj.save(COOKIFILE) 
+print 'end'
+#ladder_request = urllib.urlopen(return_url )
+#ladder_result = ladder_request.read()
+#print ladder_result
