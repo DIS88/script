@@ -1,4 +1,4 @@
 script
 ======
 
-holy shit
+其他目录都是空的。
